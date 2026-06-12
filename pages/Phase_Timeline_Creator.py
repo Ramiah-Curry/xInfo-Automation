@@ -353,6 +353,31 @@ if not df.empty and has_two_phases:
             st.rerun()
         except Exception as e:
             st.error(f"Failed to save: {e}. Ensure the Excel file is closed on your computer.")
+    
+    # --- Time Offset Calculator ---
+    st.divider()
+    st.subheader("Time Offset Calculator")
+    st.markdown("Use this to convert the video player's time into absolute seconds for the data grid.")
+    
+    # Create 4 columns for a compact, horizontal layout
+    calc_col1, calc_col2, calc_col3, calc_col4 = st.columns([1, 1, 1.5, 1.5])
+    
+    with calc_col1:
+        c_min = st.number_input("Minutes", min_value=0, step=1, value=0, key="calc_min")
+    with calc_col2:
+        c_sec = st.number_input("Seconds", min_value=0, max_value=59, step=1, value=0, key="calc_sec")
+    with calc_col3:
+        c_off = st.number_input("Quarter Offset (s)", min_value=0, step=1, value=0, key="calc_off", help="Enter the absolute time this quarter begins.")
+        
+    # The math: (Minutes * 60) + Seconds + Offset
+    total_seconds = (c_min * 60) + c_sec + c_off
+    
+    with calc_col4:
+        # A bit of CSS to push the result box down so it aligns perfectly with the input boxes
+        st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+        
+        # Display the result prominently in a green success box
+        st.success(f"**Absolute Time:** {total_seconds} s")
 
 else:
     st.error(f"Could not load data. Ensure '{SHEET_NAME}' exists and has 'PRE_SNAP' and 'POST_SNAP' columns.")
